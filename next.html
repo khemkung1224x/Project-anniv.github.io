@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Surprise ✨</title>
+
+  <!-- Fonts: DM Sans + DM Serif Display + Mali (Thai) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=DM+Serif+Display:ital@0;1&family=Mali:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{ --pink:#ff7eb6; --bg:#fff; --ink:#222; --radius:22px; --shadow:0 10px 30px rgba(255,126,182,.18); }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:"DM Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial; color:var(--ink);
+         background:radial-gradient(1200px 600px at 50% -10%, #fff7fc, #ffffff 55%); min-height:100dvh; display:grid; place-items:center; padding:32px}
+    .card{max-width:900px; width:min(92vw, 940px); background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:28px}
+    h1{font-family:"DM Serif Display",serif; font-size:clamp(36px, 5.5vw, 64px); margin:0 0 8px; letter-spacing:.3px}
+    p{margin:0 0 14px; line-height:1.7}
+    .btn{appearance:none; border:0; background:var(--pink); color:#fff; padding:14px 20px; border-radius:999px; font-weight:700; cursor:pointer; box-shadow:0 8px 20px rgba(255,126,182,.35); display:inline-block; text-decoration:none}
+    .row{display:grid; grid-template-columns:1.1fr .9fr; gap:22px; align-items:center}
+    @media (max-width:900px){ .row{grid-template-columns:1fr} }
+    .pic{border-radius:18px; overflow:hidden; aspect-ratio:4/3; box-shadow:var(--shadow)}
+    .pic img{width:100%; height:100%; object-fit:cover; display:block}
+    .list{margin:12px 0 16px; padding-left:18px}
+    footer{margin-top:16px; color:#555}
+
+    /* Use Mali for the entire paragraph */
+    .thai-letter{ font-family: "Mali", cursive, "DM Sans", sans-serif; }
+
+    /* confetti */
+    .confetti{position:fixed; inset:0; pointer-events:none}
+    .c{position:absolute; width:8px; height:14px; background:var(--pink); opacity:.85; transform:rotate(15deg); animation:fall linear forwards}
+    @keyframes fall{
+      0%{ transform:translateY(-10vh) rotate(0) }
+      100%{ transform:translateY(110vh) rotate(540deg) }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="row">
+      <div>
+        <h1>You unlocked the surprise! 🎉</h1>
+        <p>I love you more than words can say. Thanks for being my favorite person, my calm, and my chaos — all at once.</p>
+        <ul class="list">
+          <li>Date night idea: <strong>your pick</strong> (I’m buying 🍰)</li>
+          <li>Playlist I made for you: <a href="#" target="_blank" rel="noreferrer noopener">link here</a></li>
+          <li>Open when you miss me: <a href="#letter">scroll down 💌</a></li>
+        </ul>
+        <a class="btn" href="index.html">Back to the first page</a>
+      </div>
+      <div class="pic"><img src="assets/surprise.jpg" alt="Surprise"></div>
+    </div>
+
+    <footer id="letter">
+      <!-- Entire line uses Mali -->
+      <p class="thai-letter"><strong>A tiny letter:</strong> เทสภาษาไทยหน่อยยย 💗</p>
+    </footer>
+  </div>
+
+  <div class="confetti" id="confetti"></div>
+  <script>
+    // simple confetti
+    const conf = document.getElementById('confetti');
+    function drop(){
+      const n = 12 + Math.floor(Math.random()*10);
+      for(let i=0;i<n;i++){
+        const el = document.createElement('div');
+        el.className = 'c';
+        el.style.left = Math.random()*100 + 'vw';
+        el.style.background = ['#ff7eb6','#ffd7e8','#ffafd1','#ff89c5'][i%4];
+        el.style.animationDuration = (6 + Math.random()*4) + 's';
+        el.style.animationDelay = (Math.random()*2) + 's';
+        conf.appendChild(el);
+        setTimeout(()=> conf.removeChild(el), 11000);
+      }
+    }
+    drop();
+    setInterval(drop, 3000);
+  </script>
+</body>
+</html>
