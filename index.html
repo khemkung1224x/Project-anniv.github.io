@@ -14,10 +14,8 @@
       --bg:#ffffff; --radius:22px; --shadow:0 10px 30px rgba(255,126,182,.15);
     }
 
-    /* พื้นหลังกลับเป็นแบบเดิม */
-    body{
-      margin:0; font-family:"DM Sans", system-ui; background:var(--bg); color:var(--ink);
-    }
+    body{ margin:0; font-family:"DM Sans", system-ui; background:var(--bg); color:var(--ink); }
+    body.no-scroll{ overflow:hidden; }
 
     .container{width:min(1100px,92vw);margin:0 auto;}
     section{padding:64px 0}
@@ -26,14 +24,89 @@
     .sub{color:var(--ink-soft);font-size:clamp(16px,2.2vw,20px);margin-top:12px}
     .thai-letter{ font-family: "Mali", cursive, "DM Sans", sans-serif; }
 
+    /* Top love timer */
+    .love-timer{
+      position:relative;
+      padding:16px 0 0;
+      background: linear-gradient(180deg, #fff7fc 0%, #ffffff 70%);
+    }
+    .timer-pill{
+      --timer-size: clamp(22px, 5.5vw, 46px);
+      display:flex; justify-content:center; align-items:center; text-align:center;
+      gap:10px; padding:14px 20px;
+      background:#fff; border:2px solid var(--pink-soft); border-radius:999px;
+      box-shadow: var(--shadow);
+      width:fit-content; margin:0 auto 14px auto;
+      white-space: nowrap; flex-wrap: nowrap; max-width:100%; overflow:hidden;
+    }
+    #loveCounterTop{
+      font-family: "Mali", cursive, "DM Sans", sans-serif;
+      font-weight: 600;
+      font-size: var(--timer-size);
+      line-height: 1.15;
+      color: var(--pink);
+      letter-spacing: .3px;
+      font-variant-numeric: tabular-nums;
+      -moz-font-feature-settings: "tnum";
+      -webkit-font-feature-settings: "tnum";
+      font-feature-settings: "tnum";
+      white-space: nowrap; display:inline-block;
+    }
+    .timer-heart{
+      font-size: var(--timer-size);
+      animation: beat 1.2s ease-in-out infinite;
+      transform-origin: center;
+      flex:0 0 auto;
+    }
+    @keyframes beat{
+      0%,100%{ transform: scale(1); }
+      25%{ transform: scale(1.12); }
+      50%{ transform: scale(0.98); }
+      75%{ transform: scale(1.08); }
+    }
+
+    /* Intro overlay: 3-2-1 + message */
+    .intro{
+      position:fixed; inset:0; background:#fff; z-index:10000;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      transition:opacity .6s ease, visibility .6s ease;
+    }
+    .intro.hidden{ opacity:0; visibility:hidden; }
+    .count{
+      font-family:"DM Serif Display", serif;
+      font-size:clamp(64px,12vw,140px);
+      color:var(--pink);
+      line-height:1;
+      opacity:0; transform:scale(.8);
+    }
+    .count.pop{ animation:popIn .7s ease both; }
+    @keyframes popIn{
+      0%{opacity:0; transform:scale(.8)}
+      60%{opacity:1; transform:scale(1.06)}
+      100%{opacity:1; transform:scale(1)}
+    }
+    .intro-msg{
+      margin-top:18px;
+      font-size:clamp(16px,2.2vw,22px);
+      color:var(--ink-soft);
+      opacity:0; transform:translateY(8px);
+      transition:opacity .5s ease, transform .5s ease;
+      text-align:center; padding:0 18px;
+    }
+    .intro-msg.visible{ opacity:1; transform:none; }
+    .intro-hint{
+      position:absolute; bottom:22px; font-size:12px; color:#999;
+      opacity:.8;
+    }
+
     /* Hero */
-    .hero{position:relative; padding:96px 0 80px; overflow:hidden;}
+    .hero{position:relative; padding:64px 0 80px; overflow:hidden;}
     .hero-card{display:grid; grid-template-columns:1.2fr .8fr; gap:24px; align-items:center}
     .hero-photo{position:relative; border-radius:var(--radius); overflow:hidden; aspect-ratio:16/10;}
     .hero-photo img{width:100%; height:100%; object-fit:cover;}
     .hero-badge{position:absolute; top:16px; left:16px; background:rgba(255,255,255,.85); color:var(--pink); padding:8px 12px; border-radius:999px; font-weight:700; box-shadow:var(--shadow)}
 
-    /* Floating hearts (เดิม) */
+    /* Floating hearts */
     .float-hearts{position:absolute; inset:0; pointer-events:none; overflow:hidden}
     .heart{position:absolute; width:18px; height:18px; background:var(--pink); transform:rotate(45deg); opacity:.18; animation:floatUp linear infinite; border-radius:2px}
     .heart:before,.heart:after{content:""; position:absolute; width:18px; height:18px; background:var(--pink); border-radius:50%}
@@ -60,6 +133,11 @@
     .slide.active{ transform:scale(1); opacity:1; box-shadow:0 15px 35px rgba(255,126,182,.4); }
     @media(max-width:640px){ .slide{flex:0 0 85%;} }
 
+    /* Dots */
+    .dots{ display:flex; gap:8px; justify-content:center; margin:10px 0 0; }
+    .dot{ width:8px; height:8px; border-radius:999px; background:#ffd7e8; border:none; padding:0; cursor:pointer; }
+    .dot.active{ background:var(--pink); transform:scale(1.4); transition:transform .2s ease, background .2s ease; }
+
     /* Letter */
     .letter{padding:28px; border:2px solid var(--pink-soft); border-radius:22px;}
     .letter h2{font-family:"DM Serif Display",serif;font-size:32px;margin:0 0 12px}
@@ -75,29 +153,48 @@
     .status.ok{color:#19a974} .status.err{color:#e74c3c}
 
     /* Confetti canvas overlay */
-    #confetti {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      width: 100vw;
-      height: 100vh;
-      z-index: 9999;
+    #confetti { position: fixed; inset: 0; pointer-events: none; width: 100vw; height: 100vh; z-index: 9999; }
+
+    /* shake เมื่อกรอกรหัสผิด */
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      20%{transform:translateX(-6px)}
+      40%{transform:translateX(6px)}
+      60%{transform:translateX(-4px)}
+      80%{transform:translateX(4px)}
     }
+    .shake{ animation:shake .4s; }
   </style>
 </head>
-<body>
+<body class="no-scroll">
+  <!-- Top love timer -->
+  <div class="love-timer">
+    <div class="container">
+      <div class="timer-pill thai-letter" id="timerPill">
+        <span id="loveCounterTop" aria-live="polite">กำลังคำนวณเวลา…</span>
+        <span class="timer-heart" id="timerHeart" aria-hidden="true">💗</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intro Overlay -->
+  <div class="intro" id="intro" aria-live="polite">
+    <div class="count" id="introCount" aria-hidden="true">3</div>
+    <div class="intro-msg thai-letter" id="introMsg">ครบ 1 ปีแล้วนะ ขอบคุณที่อยู่กับเค้าน้าา💗</div>
+    <div class="intro-hint thai-letter">กำลังพาเข้าไปยังหน้าหลัก…</div>
+  </div>
+
   <header class="hero">
     <div class="container">
       <div class="hero-card">
         <div>
           <h1 class="headline">Happy 1st Anniversary 💞</h1>
           <p class="sub thai-letter" style="max-width:48ch">
-            A little corner of the internet that’s all yours — simple, soft, and full of our moments. 
-            Scroll down for photos, a note from me, and a tiny secret at the end.
+            ถ้าเธอได้เปิดดูแล้วแสดงว่าครบ 1 ปีที่เราได้คบกันแล้วนะ เย้ๆๆ🎉 365 วันที่เราได้คบกันเหมือนจะแปปเดียวแต่ก็นานเหมือนกันนะ ผ่านมาขนาดนี้แล้วก็อยู่กับเค้าไปนานๆเลยน้าา🤍
           </p>
         </div>
         <div class="hero-photo card">
-          <img src="assets/hero.jpg" alt="Us, smiling together">
+          <img loading="lazy" decoding="async" src="assets/hero.jpg" alt="Us, smiling together">
           <div class="hero-badge">1 year with you ✿</div>
         </div>
       </div>
@@ -111,14 +208,18 @@
       <div class="container">
         <h2 class="headline">Snapshots I love</h2>
         <p class="sub thai-letter">ปีแรกรูปคู่เราอาจจะยังไม่เยอะแต่ปีต่อๆไปก็มาถ่ายด้วยกันเยอะๆเลยน้าาา✨</p>
+
         <div class="slider" id="photoSlider">
-          <div class="slide"><img src="assets/photo1.jpg" alt="Memory 1"></div>
-          <div class="slide"><img src="assets/photo2.jpg" alt="Memory 2"></div>
-          <div class="slide"><img src="assets/photo3.jpg" alt="Memory 3"></div>
-          <div class="slide"><img src="assets/photo4.jpg" alt="Memory 4"></div>
-          <div class="slide"><img src="assets/photo5.jpg" alt="Memory 5"></div>
-          <div class="slide"><img src="assets/photo6.jpg" alt="Memory 6"></div>
+          <div class="slide"><img loading="lazy" decoding="async" src="assets/photo1.jpg" alt="Memory 1"></div>
+          <div class="slide"><img loading="lazy" decoding="async" src="assets/photo2.jpg" alt="Memory 2"></div>
+          <div class="slide"><img loading="lazy" decoding="async" src="assets/photo3.jpg" alt="Memory 3"></div>
+          <div class="slide"><img loading="lazy" decoding="async" src="assets/photo4.jpg" alt="Memory 4"></div>
+          <div class="slide"><img loading="lazy" decoding="async" src="assets/photo5.jpg" alt="Memory 5"></div>
+          <div class="slide"><img loading="lazy" decoding="async" src="assets/photo6.jpg" alt="Memory 6"></div>
         </div>
+
+        <!-- pagination dots -->
+        <div class="dots" id="dots" aria-label="Slide pagination"></div>
       </div>
     </section>
 
@@ -127,8 +228,8 @@
       <div class="container">
         <div class="letter thai-letter">
           <h2>My little note to you</h2>
-          <p>Hey you,</p>
-          <p>Thank you for every soft morning and every loud laugh. For the way you look at the world and the way you look at me. You make the ordinary feel like fireworks. I’m proud of us — how we listen, how we grow, how we show up.</p>
+          <p>To พิชณาณินธ์,</p>
+          <p>จนถึงวันนี้ก็ครบ 1 ปีแล้ว(เธอน่าจะอ่านมา 3 รอบละ5555) ตั้งแต่วันแรกที่เค้าคบกับเธอจนถึงวันนี้เค้าไม่เคยเสียใจหรือคิดผิดเลยที่เลือกเธอ เพราะตั้งแต่เค้ามีเธอเข้ามามันทำให้เค้ามีเป้าหมายในการใช้ชีวิตชัดขึ้นกว่าเมื่อก่อนอีกนะ ขอบคุณเธอที่อยู่กับเค้าค่อยอยู่ข้างๆเค้าในวันที่เค้าไม่สบายใจ อยู่ปลอบเค้า อยู่ฟังเค้าถึงเค้าจะพูดไม่เก่งแต่เธอก็พยายามเข้าใจเค้า ขอบคุณที่เข้ามาเป็นแสงสว่างในชีวิตเค้า ขอบคุณที่ทำให้เค้ายิ้มได้ในทุกๆวันนะ เค้ารักเธอนะ🤍</p>
           <p>— พีรัชชัย 💌</p>
         </div>
       </div>
@@ -141,13 +242,13 @@
           <h3>Enter our secret code</h3>
           <form id="gateForm">
             <div class="otp-wrap">
-              <input class="otp" type="password" inputmode="numeric" maxlength="1">
-              <input class="otp" type="password" inputmode="numeric" maxlength="1">
-              <input class="otp" type="password" inputmode="numeric" maxlength="1">
-              <input class="otp" type="password" inputmode="numeric" maxlength="1">
+              <input class="otp" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 1">
+              <input class="otp" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 2">
+              <input class="otp" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 3">
+              <input class="otp" type="password" inputmode="numeric" maxlength="1" aria-label="Digit 4">
             </div>
             <button class="btn" type="submit">Open</button>
-            <div id="gateStatus" class="status"></div>
+            <div id="gateStatus" class="status" aria-live="polite"></div>
           </form>
         </div>
       </div>
@@ -160,7 +261,107 @@
   <script>
     const CONFIG={CODE:"3967",REDIRECT:true,NEXT_URL:"next.html"};
 
-    /* Floating hearts (เดิม) */
+    /* ----- Intro: 3-2-1 + message ----- */
+    (function(){
+      const overlay = document.getElementById('intro');
+      const countEl = document.getElementById('introCount');
+      const msgEl   = document.getElementById('introMsg');
+
+      const seq = ["3","2","1"];
+      let i = 0;
+
+      function pop(){
+        if(i < seq.length){
+          countEl.textContent = seq[i++];
+          countEl.classList.remove('pop');
+          void countEl.offsetWidth;
+          countEl.classList.add('pop');
+          setTimeout(pop, 1200);
+        }else{
+          countEl.style.display = 'none';
+          msgEl.classList.add('visible');
+          setTimeout(()=>{
+            overlay.classList.add('hidden');
+            document.body.classList.remove('no-scroll');
+          }, 3000);
+        }
+      }
+      if(document.readyState === "loading"){
+        document.addEventListener("DOMContentLoaded", pop);
+      }else{
+        pop();
+      }
+    })();
+
+    /* 💗 Live "time together" counter + auto-fit to one line */
+    (function(){
+      const LOVE_START = '2024-09-03T00:00:00+07:00'; // แก้เป็นวันจริงได้เลย
+      const textEl = document.getElementById('loveCounterTop');
+      const pill   = document.getElementById('timerPill');
+      const heart  = document.getElementById('timerHeart');
+      const container = pill.parentElement;
+
+      if(!textEl || !pill || !heart) return;
+
+      function pad2(n){ return String(n).padStart(2,'0'); }
+      function daysInMonth(y,m){ return new Date(y, m+1, 0).getDate(); }
+      function diffYMDHMS(from, to){
+        let y = to.getFullYear() - from.getFullYear();
+        let m = to.getMonth() - from.getMonth();
+        let d = to.getDate() - from.getDate();
+        let hh = to.getHours() - from.getHours();
+        let mm = to.getMinutes() - from.getMinutes();
+        let ss = to.getSeconds() - from.getSeconds();
+        if (ss < 0){ ss += 60; mm--; }
+        if (mm < 0){ mm += 60; hh--; }
+        if (hh < 0){ hh += 24; d--; }
+        if (d < 0){
+          const y2 = to.getFullYear();
+          const m2 = to.getMonth() - 1;
+          const dim = daysInMonth(y2, (m2+12)%12);
+          d += dim; m--;
+        }
+        if (m < 0){ m += 12; y--; }
+        return {y,m,d,hh,mm,ss};
+      }
+
+      const START = new Date(LOVE_START);
+
+      function updateText(){
+        const now = new Date();
+        const {y,m,d,hh,mm,ss} = diffYMDHMS(START, now);
+        textEl.textContent = `เราอยู่ด้วยกันมา ${y} ปี ${m} เดือน ${d} วัน ${pad2(hh)}:${pad2(mm)}:${pad2(ss)} แล้วน้าา`;
+      }
+
+      function fitFont(){
+        const PADDING_X = 40;
+        const GAP = 10;
+        const maxW = container.clientWidth - 8;
+
+        let lo = 14, hi = 64, best = 14;
+        for(let k=0;k<10;k++){
+          const mid = (lo + hi) / 2;
+          pill.style.setProperty('--timer-size', mid + 'px');
+          const total = textEl.scrollWidth + GAP + heart.offsetWidth + PADDING_X;
+          if (total <= maxW){ best = mid; lo = mid; } else { hi = mid; }
+        }
+        pill.style.setProperty('--timer-size', Math.max(14, Math.min(best, 64)) + 'px');
+      }
+
+      function tick(){
+        updateText();
+        requestAnimationFrame(()=> requestAnimationFrame(fitFont));
+      }
+
+      tick();
+      setInterval(tick, 1000);
+
+      const ro = new ResizeObserver(()=> fitFont());
+      ro.observe(document.documentElement);
+      ro.observe(container);
+    })();
+
+    /* Floating hearts */
     const heartsEl=document.getElementById('hearts');
     const rand=(min,max)=>Math.random()*(max-min)+min;
     function spawnHeart(){
@@ -174,6 +375,7 @@
       setTimeout(()=>h.remove(),dur*1000);
     }
     setInterval(spawnHeart,1200);
+    for(let i=0;i<8;i++) setTimeout(spawnHeart,i*250);
 
     /* Slider center active */
     const slider=document.getElementById('photoSlider');
@@ -193,15 +395,11 @@
     window.addEventListener('resize',updateActive);
     updateActive();
 
-    /* Confetti (หัวใจ & ดาว) */
+    /* Confetti (หัวใจ & ดาว) — ใช้เฉพาะตอนปลดล็อก */
     const confettiCanvas = document.getElementById('confetti');
     const ctx = confettiCanvas.getContext('2d');
-    function resizeConfetti(){
-      confettiCanvas.width = window.innerWidth;
-      confettiCanvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeConfetti);
-    resizeConfetti();
+    function resizeConfetti(){ confettiCanvas.width = innerWidth; confettiCanvas.height = innerHeight; }
+    addEventListener('resize', resizeConfetti); resizeConfetti();
 
     function drawStar(cx, cy, spikes, outerR, innerR, rot=0){
       let x=cx, y=cy; ctx.beginPath(); ctx.moveTo(cx, cy - outerR);
@@ -216,18 +414,13 @@
     }
     function drawHeart(cx, cy, size, rot=0){
       const s = size;
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(rot);
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot);
       ctx.beginPath();
       ctx.moveTo(0, -0.25*s);
       ctx.bezierCurveTo(0.5*s, -0.75*s, 1.1*s, 0.1*s, 0, 0.9*s);
       ctx.bezierCurveTo(-1.1*s, 0.1*s, -0.5*s, -0.75*s, 0, -0.25*s);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
+      ctx.closePath(); ctx.fill(); ctx.restore();
     }
-
     function launchConfetti({duration=1200, count=80}={}){
       const particles = [];
       const colors = ['#ff7eb6', '#ff9ecb', '#ffd7e8', '#ffc2e1', '#ffffff'];
@@ -252,7 +445,7 @@
         particles.forEach(p=>{
           p.life -= dt; if(p.life<=0) return;
           alive++;
-          p.vy += 0.005*dt;      // gravity
+          p.vy += 0.005*dt;
           p.x += p.vx * dt * 0.06;
           p.y += p.vy * dt * 0.06;
           p.rot += p.vr * dt * 0.06;
@@ -266,6 +459,23 @@
         else ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
       }
       requestAnimationFrame((t)=>{ last=t; tick(t); });
+    }
+
+    // เสียง chime ตอนปลดล็อก
+    async function chime(){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ctxA = new AC();
+      const o = ctxA.createOscillator();
+      const g = ctxA.createGain();
+      o.type = 'triangle';
+      o.frequency.value = 660; // E5
+      g.gain.value = 0.0001;
+      o.connect(g).connect(ctxA.destination);
+      o.start();
+      g.gain.exponentialRampToValueAtTime(0.3, ctxA.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctxA.currentTime + 0.25);
+      o.stop(ctxA.currentTime + 0.26);
+      setTimeout(()=> ctxA.close(), 350);
     }
 
     /* OTP Gate */
@@ -284,14 +494,16 @@
     form.addEventListener('submit',e=>{
       e.preventDefault();
       const code=inputs.map(i=>i.value).join('');
+      const gate=document.querySelector('.gate');
       if(code===CONFIG.CODE){
         status.textContent="Unlocked!"; status.className="status ok";
-        launchConfetti({duration:1200, count:100});   // 🎉 ปล่อยคอนเฟตติหัวใจ/ดาว
-        if(CONFIG.REDIRECT){
-          setTimeout(()=>{ location.href = CONFIG.NEXT_URL; }, 1200); // รอให้เอฟเฟกต์เล่นก่อน
-        }
+        chime();
+        launchConfetti({duration:1200, count:100});
+        if(CONFIG.REDIRECT){ setTimeout(()=>{ location.href = CONFIG.NEXT_URL; }, 1200); }
       }else{
         status.textContent="Wrong code 💭"; status.className="status err";
+        gate.classList.add('shake'); setTimeout(()=>gate.classList.remove('shake'), 400);
+        if(navigator.vibrate) navigator.vibrate(120);
         inputs.forEach(i=>i.value=""); inputs[0].focus();
       }
     });
